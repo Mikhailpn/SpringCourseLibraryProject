@@ -1,7 +1,4 @@
 package ru.springcourse.library.models;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -67,5 +64,13 @@ public class Person {
 
     public void setBirth_year(int birth_year) {
         this.birth_year = birth_year;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 }
