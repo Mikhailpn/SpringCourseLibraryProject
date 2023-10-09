@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.springcourse.library.models.Book;
+import ru.springcourse.library.models.Person;
 
 import java.util.List;
 
@@ -21,8 +22,34 @@ public class BookDao {
         return jdbcTemplate.query("SELECT * FROM library.book", new BeanPropertyRowMapper<>(Book.class));
     }
 
+    public Book show(int id) {
+        return jdbcTemplate.query("SELECT * FROM library.book WHERE id = ?",
+                new Object[]{id},
+                new BeanPropertyRowMapper<>(Book.class)).
+                stream().findAny().orElse(null);
+    }
     public List<Book> customerBooks(int id) {
         return jdbcTemplate.query("SELECT * FROM library.book WHERE customer_id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Book.class));
     }
+
+    public void save(Book book) {
+        jdbcTemplate.update("INSERT INTO library.book(name, author, year) VALUES(?, ?, ?)",
+                book.getName(),
+                book.getAuthor(),
+                book.getYear());
+    }
+
+    public void update(int id, Book book) {
+        jdbcTemplate.update("UPDATE library.book SET name = ?, author = ?, year = ? WHERE id = ?",
+                book.getName(),
+                book.getAuthor(),
+                book.getYear(),
+                id);
+    }
+
+    public void delete(int id) {
+        jdbcTemplate.update("DELETE FROM library.book WHERE id = ?", id);
+    }
+
 
 }
