@@ -8,6 +8,7 @@ import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BookDao {
@@ -22,11 +23,11 @@ public class BookDao {
         return jdbcTemplate.query("SELECT * FROM library.book", new BeanPropertyRowMapper<>(Book.class));
     }
 
-    public Book show(int id) {
+    public Optional<Book> show(int id) {
         return jdbcTemplate.query("SELECT * FROM library.book WHERE id = ?",
                 new Object[]{id},
                 new BeanPropertyRowMapper<>(Book.class)).
-                stream().findAny().orElse(null);
+                stream().findAny();
     }
     public List<Book> customerBooks(int id) {
         return jdbcTemplate.query("SELECT * FROM library.book WHERE customer_id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Book.class));

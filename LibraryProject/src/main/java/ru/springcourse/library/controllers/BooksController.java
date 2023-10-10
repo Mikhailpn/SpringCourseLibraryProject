@@ -12,6 +12,7 @@ import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 
 @Controller
@@ -36,14 +37,14 @@ public class BooksController {
 
     @GetMapping("/{id}")
     public String show(Model model, @ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id) {
-        Book book = bookDAO.show(id);
-        Person personShow = null;
+        Book book = bookDAO.show(id).get();
+        Optional<Person> owner = personDAO.show(book.getCustomer_id());
         model.addAttribute("book", book);
-        if (book.getCustomer_id() != null){
-            personShow = personDAO.show(book.getCustomer_id());
-        }
-        model.addAttribute("people", personDAO.all());
-        model.addAttribute("personShow", personShow);
+        if (owner.isPresent())
+            model.addAttribute("owner", owner.get());
+        else
+            model.addAttribute("people", personDAO.all());
+
         return "books/show";
     }
 
@@ -55,6 +56,7 @@ public class BooksController {
     @PostMapping()
     public String createbook(@ModelAttribute("book") @Valid Book book,
                              BindingResult bindingResult){
+
         if (bindingResult.hasErrors())
             return "books/new";
         bookDAO.save(book);
@@ -86,13 +88,13 @@ public class BooksController {
     @PatchMapping("/{id}/free")
     public String freeBook(@PathVariable("id") int id){
         bookDAO.free(id);
-        return "redirect:/books";
+        return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}/allocate")
     public String allocBook(@ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id){
         bookDAO.allocate(id, personAlloc.getId());
-        return "redirect:/books";
+        return "redirect:/books/" + id;
     }
 
 

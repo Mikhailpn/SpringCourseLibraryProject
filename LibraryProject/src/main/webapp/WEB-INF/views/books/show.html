@@ -2,33 +2,40 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Show book</title>
+    <title>Книга</title>
 </head>
 <body>
 <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">VALUE</p>
 <p/>
 
-<p th:if="${personShow!=null}" th:text="${personShow.getName() + ', ' + personShow.getBirth_year()}">VALUE</p>
+<div th:if="${owner}">
+    <p th:text="${owner.getName() + ' ' + owner.getSurname() + ' ' + owner.getPatronymic() + ', ' + owner.getBirth_year()}">VALUE</p>
 
-<form th:if="${personShow!=null}" th:method="PATCH" th:action="@{/books/{id}/free(id=${book.getId()})}" th:object="${book}">
-    <input type="submit" value="Free!"/>
-</form>
+    <form  th:method="PATCH" th:action="@{/books/{id}/free(id=${book.getId()})}" th:object="${book}">
+        <input type="submit" value="Освободить"/>
+    </form>
+</div>
 
-<form th:if="${personShow==null}" th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}">
-    <label for="personAlloc">Select person to allocate:</label>
+<p/>
+<p/>
+<p/>
+
+<form th:if="${people}" th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}" >
+    <label for="personAlloc">Укажите пользователя:</label>
     <select th:object="${personAlloc}" th:field="*{id}" id="personAlloc">
         <option th:each="person : ${people}" th:value="${person.getId()}"
                 th:text="${person.getName()}"></option>
     </select>
 
-    <input type="submit" value="Allocate" />
+    <input type="submit" value="Выдать" />
 </form>
 
+<p/>
 
-<a th:href="@{/books/{id}/edit(id=${book.getId()})}">Edit</a>
+<a th:href="@{/books/{id}/edit(id=${book.getId()})}">Редактировать</a>
 
 <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
-    <input type="submit" value="Delete"/>
+    <input type="submit" value="Удалить"/>
 </form>
 </body>
 </html>

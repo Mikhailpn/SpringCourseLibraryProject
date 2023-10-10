@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.springcourse.library.dao.BookDao;
 import ru.springcourse.library.dao.PersonDao;
 import ru.springcourse.library.models.Person;
+import ru.springcourse.library.util.PersonValidator;
 
 import javax.validation.Valid;
 
@@ -20,11 +21,14 @@ public class PeopleController {
     private final PersonDao personDao;
     private final BookDao bookDao;
 
+    private final PersonValidator validator;
+
     @Autowired
-    public PeopleController(PersonDao personDao, BookDao bookDao) {
+    public PeopleController(PersonDao personDao, BookDao bookDao, PersonValidator validator) {
 
         this.personDao = personDao;
         this.bookDao = bookDao;
+        this.validator = validator;
     }
 
     @GetMapping()
@@ -35,7 +39,7 @@ public class PeopleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person", personDao.show(id));
+        model.addAttribute("person", personDao.show(id).get());
         model.addAttribute("books", bookDao.customerBooks(id));
         return "people/show";
     }
@@ -48,6 +52,9 @@ public class PeopleController {
     @PostMapping()
     public String createPerson(@ModelAttribute("person") @Valid Person person,
                                BindingResult bindingResult) {
+
+        validator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors())
             return "people/new";
 
@@ -59,6 +66,9 @@ public class PeopleController {
     public String updatePerson(@ModelAttribute("person") @Valid Person person,
                                BindingResult bindingResult,
                                @PathVariable("id") int id) {
+
+        validator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors())
             return "people/edit";
 
@@ -68,7 +78,7 @@ public class PeopleController {
 
     @GetMapping("/{id}/edit")
     public String editPerson(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", personDao.show(id));
+        model.addAttribute("person", personDao.show(id).get());
         return "people/edit";
     }
 

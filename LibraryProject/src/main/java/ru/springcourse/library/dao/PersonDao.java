@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.springcourse.library.models.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDao {
@@ -21,9 +22,9 @@ public class PersonDao {
         return jdbcTemplate.query("SELECT * FROM library.person", new BeanPropertyRowMapper<>(Person.class));
     }
 
-    public Person show(int id) {
+    public Optional<Person> show(Integer id) {
         return jdbcTemplate.query("SELECT * FROM library.person WHERE id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class))
-                .stream().findAny().orElse(null);
+                .stream().findAny();
     }
 
     public void save(Person person) {
@@ -37,6 +38,13 @@ public class PersonDao {
                 person.getPatronymic(),
                 person.getBirth_year(),
                 id);
+    }
+
+    public Optional<Person> findByFIO(Person person){
+        return jdbcTemplate.query("SELECT * FROM library.person WHERE name = ? AND surname = ? AND patronymic = ?",
+                new Object[]{person.getName(), person.getSurname(), person.getPatronymic()},
+                new BeanPropertyRowMapper<>(Person.class))
+                .stream().findAny();
     }
 
     public void delete(int id) {

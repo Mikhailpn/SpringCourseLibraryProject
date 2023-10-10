@@ -1,22 +1,26 @@
 package ru.springcourse.library.models;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class Person {
     private int id;
 
     @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 40, message = "Name should be between 2 and 30 characters")
+    @Size(max = 40, message = "Max length is 40")
     private String name;
 
     @NotEmpty(message = "Surname should not be empty")
-    @Size(min = 2, max = 40, message = "Surname should be between 2 and 40 characters")
+    @Size(max = 40, message = "Max length is 40")
     private String surname;
 
-    @Size(min = 2, max = 40, message = "Patronymic should be between 2 and 40 characters")
+    @NotEmpty(message = "Patronymic should not be empty")
+    @Size(max = 40, message = "Max length is 40")
     private String patronymic;
 
 
+    @Min(value = 1900, message = "Year must be > 1900")
     private int birth_year;
 
 
