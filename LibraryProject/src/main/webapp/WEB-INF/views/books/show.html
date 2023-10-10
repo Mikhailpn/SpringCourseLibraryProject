@@ -6,6 +6,23 @@
 </head>
 <body>
 <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">VALUE</p>
+<p/>
+
+<p th:if="${personShow!=null}" th:text="${personShow.getName() + ', ' + personShow.getBirth_year()}">VALUE</p>
+
+<form th:if="${personShow!=null}" th:method="PATCH" th:action="@{/books/{id}/free(id=${book.getId()})}" th:object="${book}">
+    <input type="submit" value="Free!"/>
+</form>
+
+<form th:if="${personShow==null}" th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}">
+    <label for="personAlloc">Select person to allocate:</label>
+    <select th:object="${personAlloc}" th:field="*{id}" id="personAlloc">
+        <option th:each="person : ${people}" th:value="${person.getId()}"
+                th:text="${person.getName()}"></option>
+    </select>
+
+    <input type="submit" value="Allocate" />
+</form>
 
 
 <a th:href="@{/books/{id}/edit(id=${book.getId()})}">Edit</a>

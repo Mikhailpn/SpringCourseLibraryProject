@@ -51,5 +51,12 @@ public class BookDao {
         jdbcTemplate.update("DELETE FROM library.book WHERE id = ?", id);
     }
 
+    public void free(int id){
+        jdbcTemplate.update("UPDATE library.book SET customer_id = NULL WHERE id = ?", id);
+    }
+
+    public void allocate(int book_id, Integer customer_id){
+        jdbcTemplate.update("UPDATE library.book SET customer_id = ? WHERE id = ?",customer_id, book_id);
+    }
 
 }

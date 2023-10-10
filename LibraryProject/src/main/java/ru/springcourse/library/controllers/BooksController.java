@@ -7,7 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.springcourse.library.dao.BookDao;
+import ru.springcourse.library.dao.PersonDao;
 import ru.springcourse.library.models.Book;
+import ru.springcourse.library.models.Person;
 
 import javax.validation.Valid;
 
@@ -17,10 +19,13 @@ import javax.validation.Valid;
 public class BooksController {
 
     private final BookDao bookDAO;
+    private final PersonDao personDAO;
 
     @Autowired
-    public BooksController(BookDao bookDAO) {
-        this.bookDAO = bookDAO;
+    public BooksController(BookDao bookDao, PersonDao personDao) {
+
+        this.bookDAO = bookDao;
+        this.personDAO = personDao;
     }
 
     @GetMapping()
@@ -30,8 +35,15 @@ public class BooksController {
     }
 
     @GetMapping("/{id}")
-    public String show(Model model, @PathVariable("id") int id) {
-        model.addAttribute("book", bookDAO.show(id));
+    public String show(Model model, @ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id) {
+        Book book = bookDAO.show(id);
+        Person personShow = null;
+        model.addAttribute("book", book);
+        if (book.getCustomer_id() != null){
+            personShow = personDAO.show(book.getCustomer_id());
+        }
+        model.addAttribute("people", personDAO.all());
+        model.addAttribute("personShow", personShow);
         return "books/show";
     }
 
@@ -66,8 +78,20 @@ public class BooksController {
     }
 
     @DeleteMapping("/{id}")
-    String deleteBook(@PathVariable("id") int id){
+    public String deleteBook(@PathVariable("id") int id){
         bookDAO.delete(id);
+        return "redirect:/books";
+    }
+
+    @PatchMapping("/{id}/free")
+    public String freeBook(@PathVariable("id") int id){
+        bookDAO.free(id);
+        return "redirect:/books";
+    }
+
+    @PatchMapping("/{id}/allocate")
+    public String allocBook(@ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id){
+        bookDAO.allocate(id, personAlloc.getId());
         return "redirect:/books";
     }
 
