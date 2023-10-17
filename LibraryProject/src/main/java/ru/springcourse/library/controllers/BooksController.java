@@ -38,7 +38,8 @@ public class BooksController {
     @GetMapping("/{id}")
     public String show(Model model, @ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id) {
         Book book = bookDAO.show(id).get();
-        Optional<Person> owner = personDAO.show(book.getCustomer_id());
+        Optional<Person> owner = Optional.ofNullable(book.getCustomer());
+
         model.addAttribute("book", book);
         if (owner.isPresent())
             model.addAttribute("owner", owner.get());
@@ -65,7 +66,7 @@ public class BooksController {
 
     @GetMapping("/{id}/edit")
     public String editBook(Model model, @PathVariable("id") int id) {
-        model.addAttribute("book", bookDAO.show(id));
+        model.addAttribute("book", bookDAO.show(id).get());
         return "books/edit";
     }
 

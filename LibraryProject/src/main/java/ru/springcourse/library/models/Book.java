@@ -2,36 +2,46 @@ package ru.springcourse.library.models;
 
 import org.springframework.lang.Nullable;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
+@Entity
+@Table(name = "library.book")
 public class Book {
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotEmpty(message = "Name should not be empty")
     @Size(min = 2, max = 100, message = "Name should be between 2 and 100 characters")
+    @Column
     private String name;
 
-    @NotEmpty(message = "Surname should not be empty")
+    @NotEmpty(message = "Author should not be empty")
     @Size(min = 2, max = 100, message = "Surname should be between 2 and 100 characters")
+    @Column
     private String author;
 
+    @Column
     private int year;
 
-
-    private Integer customer_id;
+    @ManyToOne()
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private Person customer;
 
     public Book() {
 
     }
 
-    public Book(int id, String name, String author, int year, Integer customer_id) {
+    public Book(int id, String name, String author, int year, Person customer) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.year = year;
-        this.customer_id = customer_id;
+        this.customer = customer;
     }
 
 
@@ -59,13 +69,6 @@ public class Book {
         this.author = author;
     }
 
-    public Integer getCustomer_id() {
-        return customer_id;
-    }
-
-    public void setCustomer_id(Integer customer_id) {
-        this.customer_id = customer_id;
-    }
 
     public int getYear() {
         return year;
@@ -73,5 +76,13 @@ public class Book {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public Person getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Person customer) {
+        this.customer = customer;
     }
 }

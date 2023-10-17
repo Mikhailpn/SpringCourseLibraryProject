@@ -1,11 +1,16 @@
 package ru.springcourse.library.dao;
 
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -13,51 +18,70 @@ import java.util.Optional;
 @Component
 public class BookDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    //private final JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    public BookDao(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate = jdbcTemplate;
+    public BookDao(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<Book> all() {
-        return jdbcTemplate.query("SELECT * FROM library.book", new BeanPropertyRowMapper<>(Book.class));
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("FROM Book", Book.class).getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Book> show(int id) {
-        return jdbcTemplate.query("SELECT * FROM library.book WHERE id = ?",
-                new Object[]{id},
-                new BeanPropertyRowMapper<>(Book.class)).
-                stream().findAny();
+        Session session = sessionFactory.getCurrentSession();
+        Optional<Book> book = Optional.of(session.get(Book.class, id));
+        if (book.isPresent())
+            Hibernate.initialize(book.get().getCustomer());
+        return book;
     }
+
+    @Transactional(readOnly = true)
     public List<Book> customerBooks(int id) {
-        return jdbcTemplate.query("SELECT * FROM library.book WHERE customer_id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Book.class));
+        Session session = sessionFactory.getCurrentSession();
+        Person person = session.get(Person.class, id);
+        return person.getBookList();
     }
-
+    @Transactional()
     public void save(Book book) {
-        jdbcTemplate.update("INSERT INTO library.book(name, author, year) VALUES(?, ?, ?)",
-                book.getName(),
-                book.getAuthor(),
-                book.getYear());
+        Session session = sessionFactory.getCurrentSession();
+        session.save(book);
     }
 
-    public void update(int id, Book book) {
-        jdbcTemplate.update("UPDATE library.book SET name = ?, author = ?, year = ? WHERE id = ?",
-                book.getName(),
-                book.getAuthor(),
-                book.getYear(),
-                id);
+    @Transactional()
+    public void update(int id, Book updatedBook) {
+        Session session = sessionFactory.getCurrentSession();
+        Book bookToUpdate = session.get(Book.class, id);
+        bookToUpdate.setAuthor(updatedBook.getAuthor());
+        bookToUpdate.setName(updatedBook.getName());
+        bookToUpdate.setYear(updatedBook.getYear());
     }
 
+    @Transactional
     public void delete(int id) {
-        jdbcTemplate.update("DELETE FROM library.book WHERE id = ?", id);
+        Session session = sessionFactory.getCurrentSession();
+        Book book = session.get(Book.class, id);
+        session.delete(book);
     }
 
+    @Transactional()
     public void free(int id){
-        jdbcTemplate.update("UPDATE library.book SET customer_id = NULL WHERE id = ?", id);
+        Session session = sessionFactory.getCurrentSession();
+        Book book = session.get(Book.class, id);
+        book.setCustomer(null);
     }
 
-    public void allocate(int book_id, Integer customer_id){
-        jdbcTemplate.update("UPDATE library.book SET customer_id = ? WHERE id = ?",customer_id, book_id);
+    @Transactional
+    public void allocate(int book_id, int customer_id){
+        Session session = sessionFactory.getCurrentSession();
+        Book book = session.get(Book.class, book_id);
+        Person customer = session.get(Person.class, customer_id);
+        book.setCustomer(customer);
     }
 
 }

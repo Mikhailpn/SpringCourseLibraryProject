@@ -1,9 +1,13 @@
 package ru.springcourse.library.dao;
 
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.springcourse.library.models.Person;
 
 import java.util.List;
@@ -12,43 +16,59 @@ import java.util.Optional;
 @Component
 public class PersonDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
     @Autowired
-    public PersonDao(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate = jdbcTemplate;
+    public PersonDao(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<Person> all() {
-        return jdbcTemplate.query("SELECT * FROM library.person", new BeanPropertyRowMapper<>(Person.class));
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("FROM Person", Person.class).getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Person> show(Integer id) {
-        return jdbcTemplate.query("SELECT * FROM library.person WHERE id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class))
-                .stream().findAny();
+        Session session = sessionFactory.getCurrentSession();
+        Optional<Person> person = Optional.of(session.get(Person.class, id));
+        if (person.isPresent())
+            Hibernate.initialize(person.get().getBookList());
+
+        return person;
     }
 
+    @Transactional
     public void save(Person person) {
-        jdbcTemplate.update("INSERT INTO library.person(name, surname, patronymic, birth_year) VALUES(?, ?, ?, ?)", person.getName(), person.getSurname(), person.getPatronymic(), person.getBirth_year());
+        Session session = sessionFactory.getCurrentSession();
+        session.save(person);
     }
 
-    public void update(int id, Person person) {
-        jdbcTemplate.update("UPDATE library.person SET name = ?, surname = ?, patronymic = ?, birth_year = ? WHERE id = ?",
-                person.getName(),
-                person.getSurname(),
-                person.getPatronymic(),
-                person.getBirth_year(),
-                id);
+    @Transactional
+    public void update(int id, Person updatedPerson) {
+        Session session = sessionFactory.getCurrentSession();
+        Person personToUpdate = session.get(Person.class, id);
+        personToUpdate.setName(updatedPerson.getName());
+        personToUpdate.setBirth_year(updatedPerson.getBirth_year());
+        personToUpdate.setSurname(updatedPerson.getSurname());
+        personToUpdate.setPatronymic(updatedPerson.getPatronymic());
     }
 
+    @Transactional(readOnly = true)
     public Optional<Person> findByFIO(Person person){
-        return jdbcTemplate.query("SELECT * FROM library.person WHERE name = ? AND surname = ? AND patronymic = ?",
-                new Object[]{person.getName(), person.getSurname(), person.getPatronymic()},
-                new BeanPropertyRowMapper<>(Person.class))
-                .stream().findAny();
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "FROM Person WHERE name=:name  AND surname=:surname AND patronymic=:patronymic";
+        return session.createQuery(hql, Person.class)
+                .setParameter("name", person.getName())
+                .setParameter("surname", person.getSurname())
+                .setParameter("patronymic", person.getPatronymic()).list().stream().findAny();
     }
 
+    @Transactional
     public void delete(int id) {
-        jdbcTemplate.update("DELETE FROM library.person  WHERE id = ?", id);
+        Session session = sessionFactory.getCurrentSession();
+        Person person = session.get(Person.class, id);
+        session.delete(person);
     }
 
 

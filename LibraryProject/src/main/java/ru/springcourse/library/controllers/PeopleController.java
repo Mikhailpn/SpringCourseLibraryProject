@@ -1,6 +1,7 @@
 package ru.springcourse.library.controllers;
 
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +19,14 @@ import javax.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
 
-    private final PersonDao personDao;
-    private final BookDao bookDao;
+private SessionFactory sessionFactory;
 
     private final PersonValidator validator;
+    private final PersonDao personDao;
 
     @Autowired
-    public PeopleController(PersonDao personDao, BookDao bookDao, PersonValidator validator) {
-
+    public PeopleController(PersonDao personDao, PersonValidator validator) {
         this.personDao = personDao;
-        this.bookDao = bookDao;
         this.validator = validator;
     }
 
@@ -39,8 +38,9 @@ public class PeopleController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person", personDao.show(id).get());
-        model.addAttribute("books", bookDao.customerBooks(id));
+        Person person = personDao.show(id).get();
+        model.addAttribute("person", person);
+        model.addAttribute("books", person.getBookList());
         return "people/show";
     }
 
