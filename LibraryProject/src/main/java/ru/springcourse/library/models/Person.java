@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-@Table(name = "library.person")
+@Table(name = "librarymm.person")
 public class Person {
 
     @Id
@@ -25,6 +25,16 @@ public class Person {
     @Column
     private String surname;
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     @NotEmpty(message = "Patronymic should not be empty")
     @Size(max = 40, message = "Max length is 40")
     @Column
@@ -35,7 +45,7 @@ public class Person {
     @Column
     private int birth_year;
 
-    @OneToMany(mappedBy = "customer")
+    @ManyToMany(mappedBy = "personList")
     private List<Book> bookList;
 
 
@@ -100,4 +110,7 @@ public class Person {
     public void setBookList(List<Book> bookList) {
         this.bookList = bookList;
     }
+
+
+
 }

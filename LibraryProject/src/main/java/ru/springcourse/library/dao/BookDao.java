@@ -37,7 +37,7 @@ public class BookDao {
         Session session = sessionFactory.getCurrentSession();
         Optional<Book> book = Optional.of(session.get(Book.class, id));
         if (book.isPresent())
-            Hibernate.initialize(book.get().getCustomer());
+            Hibernate.initialize(book.get().getPersonList());
         return book;
     }
 
@@ -70,10 +70,12 @@ public class BookDao {
     }
 
     @Transactional()
-    public void free(int id){
+    public void free(int book_id, Person personToFree){
         Session session = sessionFactory.getCurrentSession();
-        Book book = session.get(Book.class, id);
-        book.setCustomer(null);
+        Book book = session.get(Book.class, book_id);
+        Person person = session.get(Person.class, personToFree.getId());
+        book.getPersonList().remove(person);
+        book.getPersonList();
     }
 
     @Transactional
@@ -81,7 +83,7 @@ public class BookDao {
         Session session = sessionFactory.getCurrentSession();
         Book book = session.get(Book.class, book_id);
         Person customer = session.get(Person.class, customer_id);
-        book.setCustomer(customer);
+        book.getPersonList().add(customer);
     }
 
 }

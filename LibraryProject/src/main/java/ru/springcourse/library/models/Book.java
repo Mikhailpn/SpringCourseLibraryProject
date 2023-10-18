@@ -6,9 +6,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
-@Table(name = "library.book")
+@Table(name = "librarymm.book")
 public class Book {
     @Id
     @Column
@@ -28,20 +29,22 @@ public class Book {
     @Column
     private int year;
 
-    @ManyToOne()
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    private Person customer;
+    @ManyToMany()
+    @JoinTable(name = "librarymm.person_book",
+    joinColumns = @JoinColumn(name = "book_id"),
+    inverseJoinColumns = @JoinColumn(name = "person_id"))
+    private List<Person> personList;
 
     public Book() {
 
     }
 
-    public Book(int id, String name, String author, int year, Person customer) {
+    public Book(int id, String name, String author, int year, List<Person> personList) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.year = year;
-        this.customer = customer;
+        this.personList = personList;
     }
 
 
@@ -78,11 +81,12 @@ public class Book {
         this.year = year;
     }
 
-    public Person getCustomer() {
-        return customer;
+
+    public List<Person> getPersonList() {
+        return personList;
     }
 
-    public void setCustomer(Person customer) {
-        this.customer = customer;
+    public void setPersonList(List<Person> personList) {
+        this.personList = personList;
     }
 }

@@ -8,19 +8,28 @@
 <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">VALUE</p>
 <p/>
 
-<div th:if="${owner}">
+<div th:if="${owners}" th:each="owner : ${owners}">
     <p th:text="${owner.getName() + ' ' + owner.getSurname() + ' ' + owner.getPatronymic() + ', ' + owner.getBirth_year()}">VALUE</p>
+</div>
 
-    <form  th:method="PATCH" th:action="@{/books/{id}/free(id=${book.getId()})}" th:object="${book}">
-        <input type="submit" value="Освободить"/>
+<div th:if="${ownerFree}">
+    <form  th:method="PATCH" th:action="@{/books/{id}/free(id=${book.getId()})}" >
+        <label for="ownerFree">Укажите пользователя:</label>
+        <select th:object="${ownerFree}" th:field="*{id}" id="ownerFree">
+            <option th:each="owner : ${owners}" th:value="${owner.getId()}"
+                    th:text="${owner.getName()}"></option>
+        </select>
+
+        <input type="submit" value="Освободить" />
     </form>
 </div>
 
+
 <p/>
 <p/>
 <p/>
 
-<form th:if="${people}" th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}" >
+<form  th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}" >
     <label for="personAlloc">Укажите пользователя:</label>
     <select th:object="${personAlloc}" th:field="*{id}" id="personAlloc">
         <option th:each="person : ${people}" th:value="${person.getId()}"

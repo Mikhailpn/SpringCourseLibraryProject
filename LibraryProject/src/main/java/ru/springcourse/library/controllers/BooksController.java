@@ -12,6 +12,7 @@ import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,13 +39,15 @@ public class BooksController {
     @GetMapping("/{id}")
     public String show(Model model, @ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id) {
         Book book = bookDAO.show(id).get();
-        Optional<Person> owner = Optional.ofNullable(book.getCustomer());
+        List<Person> personList = book.getPersonList();
 
         model.addAttribute("book", book);
-        if (owner.isPresent())
-            model.addAttribute("owner", owner.get());
-        else
-            model.addAttribute("people", personDAO.all());
+        if (personList.size() > 0){
+            model.addAttribute("owners", personList);
+            Person person = new Person();
+            model.addAttribute("ownerFree", person);
+        }
+        model.addAttribute("people", personDAO.all());
 
         return "books/show";
     }
@@ -87,9 +90,9 @@ public class BooksController {
     }
 
     @PatchMapping("/{id}/free")
-    public String freeBook(@PathVariable("id") int id){
-        bookDAO.free(id);
-        return "redirect:/books/" + id;
+    public String freeBook(@PathVariable("id") int book_id, @ModelAttribute("ownerFree") Person person){
+        bookDAO.free(book_id, person);
+        return "redirect:/books/" + book_id;
     }
 
     @PatchMapping("/{id}/allocate")
