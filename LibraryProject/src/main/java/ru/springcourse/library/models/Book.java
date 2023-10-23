@@ -89,4 +89,14 @@ public class Book {
     public void setPersonList(List<Person> personList) {
         this.personList = personList;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

@@ -12,8 +12,11 @@ import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
 
 
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class BookDao {
@@ -84,6 +87,16 @@ public class BookDao {
         Book book = session.get(Book.class, book_id);
         Person customer = session.get(Person.class, customer_id);
         book.getPersonList().add(customer);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Person> getPossibleOwners(int book_id){
+        Session session = sessionFactory.getCurrentSession();
+        Book book = session.get(Book.class, book_id);
+        List<Person> people = session.createQuery("FROM Person", Person.class).getResultList();
+        return people.stream().filter(x->!x.getBookList().contains(book)).collect(Collectors.toList());
+
     }
 
 }

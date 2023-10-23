@@ -32,7 +32,7 @@
 <form  th:method="PATCH" th:action="@{/books/{id}/allocate(id=${book.getId()})}" >
     <label for="personAlloc">Укажите пользователя:</label>
     <select th:object="${personAlloc}" th:field="*{id}" id="personAlloc">
-        <option th:each="person : ${people}" th:value="${person.getId()}"
+        <option th:each="person : ${posOwners}" th:value="${person.getId()}"
                 th:text="${person.getName()}"></option>
     </select>
 

@@ -39,15 +39,16 @@ public class BooksController {
     @GetMapping("/{id}")
     public String show(Model model, @ModelAttribute("personAlloc") Person personAlloc, @PathVariable("id") int id) {
         Book book = bookDAO.show(id).get();
-        List<Person> personList = book.getPersonList();
+        List<Person> curOwners = book.getPersonList();
 
         model.addAttribute("book", book);
-        if (personList.size() > 0){
-            model.addAttribute("owners", personList);
+        if (curOwners.size() > 0){
+            model.addAttribute("owners", curOwners);
             Person person = new Person();
             model.addAttribute("ownerFree", person);
         }
-        model.addAttribute("people", personDAO.all());
+
+        model.addAttribute("posOwners", bookDAO.getPossibleOwners(id));
 
         return "books/show";
     }
