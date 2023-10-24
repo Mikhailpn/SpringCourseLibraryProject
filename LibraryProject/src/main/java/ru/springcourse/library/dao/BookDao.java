@@ -93,9 +93,11 @@ public class BookDao {
     @Transactional(readOnly = true)
     public List<Person> getPossibleOwners(int book_id){
         Session session = sessionFactory.getCurrentSession();
-        Book book = session.get(Book.class, book_id);
-        List<Person> people = session.createQuery("FROM Person", Person.class).getResultList();
-        return people.stream().filter(x->!x.getBookList().contains(book)).collect(Collectors.toList());
+        List<Person> personList = session.createQuery("SELECT p FROM Person p WHERE NOT EXISTS" +
+                        " (SELECT p1 FROM Person p1 JOIN p1.bookList b WHERE b.id = ?1 AND p.id = p1.id)", Person.class)
+                .setParameter(1,book_id)
+                .getResultList();
+        return  personList;
 
     }
 
