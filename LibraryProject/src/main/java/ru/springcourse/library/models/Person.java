@@ -35,7 +35,7 @@ public class Person {
     @Column
     private int birth_year;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
     private List<Book> bookList;
 
 

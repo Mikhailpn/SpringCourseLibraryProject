@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.springcourse.library.dao.BookDao;
-import ru.springcourse.library.dao.PersonDao;
 import ru.springcourse.library.models.Person;
+import ru.springcourse.library.services.BookService;
+import ru.springcourse.library.services.PeopleService;
 import ru.springcourse.library.util.PersonValidator;
 
 import javax.validation.Valid;
@@ -22,23 +22,27 @@ public class PeopleController {
 private SessionFactory sessionFactory;
 
     private final PersonValidator validator;
-    private final PersonDao personDao;
+    private final PeopleService peopleService;
+
+    private final BookService bookService;
+
 
     @Autowired
-    public PeopleController(PersonDao personDao, PersonValidator validator) {
-        this.personDao = personDao;
+    public PeopleController(PersonValidator validator, PeopleService peopleService, BookService bookService) {
         this.validator = validator;
+        this.peopleService = peopleService;
+        this.bookService = bookService;
     }
 
     @GetMapping()
     public String all(Model model) {
-        model.addAttribute("people", personDao.all());
+        model.addAttribute("people", peopleService.findAll());
         return "people/all";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        Person person = personDao.show(id).get();
+        Person person = peopleService.findById(id).get();
         model.addAttribute("person", person);
         model.addAttribute("books", person.getBookList());
         return "people/show";
@@ -58,7 +62,7 @@ private SessionFactory sessionFactory;
         if (bindingResult.hasErrors())
             return "people/new";
 
-        personDao.save(person);
+        peopleService.create(person);
         return "redirect:/people";
     }
 
@@ -72,19 +76,19 @@ private SessionFactory sessionFactory;
         if (bindingResult.hasErrors())
             return "people/edit";
 
-        personDao.update(id, person);
+        peopleService.update(id, person);
         return "redirect:/people";
     }
 
     @GetMapping("/{id}/edit")
     public String editPerson(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", personDao.show(id).get());
+        model.addAttribute("person", peopleService.findById(id).get());
         return "people/edit";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        personDao.delete(id);
+        peopleService.delete(id);
         return "redirect:/people";
     }
 
