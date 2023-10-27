@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.springcourse.library.models.Person;
 import ru.springcourse.library.repositories.PeopleRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +29,13 @@ public class PeopleService {
     }
     @Transactional
     public void create(Person person){
+        person.setLastUpdate(new Date());
         peopleRepository.save(person);
     }
     @Transactional
     public void update(int id, Person person){
         person.setId(id);
+        person.setLastUpdate(new Date());
         peopleRepository.save(person);
     }
 

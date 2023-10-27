@@ -1,9 +1,12 @@
 package ru.springcourse.library.models;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,13 +33,20 @@ public class Person {
     @Column
     private String patronymic;
 
-
-    @Min(value = 1900, message = "Year must be > 1900")
-    @Column
-    private int birth_year;
-
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
     private List<Book> bookList;
+
+
+    @Column(name = "birth_date")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date birthDate;
+
+    @Column(name = "last_update")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastUpdate;
+
+
 
 
     public Person() {
@@ -48,10 +58,16 @@ public class Person {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
-        this.birth_year = birth_year;
         this.bookList = bookList;
     }
 
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
     public int getId() {
         return id;
     }
@@ -77,14 +93,6 @@ public class Person {
         this.patronymic = patronymic;
     }
 
-    public int getBirth_year() {
-        return birth_year;
-    }
-
-    public void setBirth_year(int birth_year) {
-        this.birth_year = birth_year;
-    }
-
     public String getSurname() {
         return surname;
     }
@@ -99,5 +107,13 @@ public class Person {
 
     public void setBookList(List<Book> bookList) {
         this.bookList = bookList;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

@@ -22,10 +22,12 @@
     <div style="color:red" th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">Patronymic Error</div>
     <br/>
 
-    <label for="birth_year">Введите год рождения: </label>
-    <input type="text" th:field="*{birth_year}" id="birth_year"/>
-    <div style="color:red" th:if="${#fields.hasErrors('birth_year')}" th:errors="*{birth_year}">Birth year Error</div>
+    <label for="birthDate">Введите дату рождения: </label>
+    <input type="text" th:field="*{birthDate}" id="birthDate"/>
+    <div style="color:red" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">Birth date Error</div>
     <br/>
+
+
 
     <input type="submit" value="Сохранить"/>
 </form>
