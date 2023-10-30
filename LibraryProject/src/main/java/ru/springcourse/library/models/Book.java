@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Table(name = "library.book")
@@ -32,6 +33,12 @@ public class Book {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Person customer;
 
+    @Column(name = "alloc_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date allocTime;
+
+    @Transient
+    private boolean overdue;
     public Book() {
 
     }
@@ -42,6 +49,7 @@ public class Book {
         this.author = author;
         this.year = year;
         this.customer = customer;
+        this.overdue = false;
     }
 
 
@@ -84,5 +92,21 @@ public class Book {
 
     public void setCustomer(Person customer) {
         this.customer = customer;
+    }
+
+    public Date getAllocTime() {
+        return allocTime;
+    }
+
+    public void setAllocTime(Date allocTime) {
+        this.allocTime = allocTime;
+    }
+
+    public boolean isOverdue() {
+        return overdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        this.overdue = overdue;
     }
 }

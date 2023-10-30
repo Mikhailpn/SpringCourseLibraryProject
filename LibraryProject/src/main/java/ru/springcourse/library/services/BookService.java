@@ -9,6 +9,7 @@ import ru.springcourse.library.repositories.BooksRepository;
 import ru.springcourse.library.repositories.PeopleRepository;
 
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +22,11 @@ public class BookService {
     public BookService(BooksRepository booksRepository){
         this.booksRepository = booksRepository;
     }
-    public List<Book> findAll(){
-        return booksRepository.findAll();
+    public List<Book> findAll(Boolean sort){
+        if (sort == true)
+            return booksRepository.findAllByOrderByYear();
+        else
+            return booksRepository.findAll();
     }
 
     public Optional<Book> findById(int id){
@@ -46,15 +50,23 @@ public class BookService {
     @Transactional
     public void free(int id){
         Optional<Book> book = booksRepository.findById(id);
-        if (book.isPresent())
+        if (book.isPresent()) {
             book.get().setCustomer(null);
+            book.get().setAllocTime(null);
+        }
     }
 
     @Transactional
     public void allocate(int id, Person customer){
         Optional<Book> book = booksRepository.findById(id);
-        if (book.isPresent())
+        if (book.isPresent()) {
             book.get().setCustomer(customer);
+            book.get().setAllocTime(new Date());
+        }
+    }
+
+    public List<Book> findByNameStartingWith(String begining){
+        return booksRepository.findByNameStartingWith(begining);
     }
 
 

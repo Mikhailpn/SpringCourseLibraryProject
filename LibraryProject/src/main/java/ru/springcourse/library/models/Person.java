@@ -33,7 +33,7 @@ public class Person {
     @Column
     private String patronymic;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private List<Book> bookList;
 
 
@@ -42,9 +42,6 @@ public class Person {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date birthDate;
 
-    @Column(name = "last_update")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastUpdate;
 
 
 
@@ -109,11 +106,4 @@ public class Person {
         this.bookList = bookList;
     }
 
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
 }

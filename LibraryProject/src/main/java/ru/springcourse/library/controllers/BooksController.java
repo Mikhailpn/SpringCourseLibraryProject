@@ -33,8 +33,10 @@ public class BooksController {
 
 
     @GetMapping()
-    public String all(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String all(Model model, @RequestParam(name = "sort_by_year", required = false) Boolean sort) {
+        if(sort == null)
+            sort = false;
+        model.addAttribute("books", bookService.findAll(sort));
         return "books/all";
     }
 
