@@ -12,6 +12,8 @@ import ru.springcourse.library.services.BookService;
 import ru.springcourse.library.services.PeopleService;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 
@@ -106,7 +108,10 @@ public class BooksController {
     @GetMapping("/search")
     public String searchBooks(Model model, @RequestParam(name = "beginning", required = false) String beginning){
         if (beginning != null){
-            model.addAttribute("books", bookService.findByNameStartingWith(beginning));
+            if(beginning.equals(""))
+                model.addAttribute("books", Collections.emptyList());
+            else
+                model.addAttribute("books", bookService.findByNameStartingWith(beginning));
         }
         return "books/search";
     }
