@@ -103,6 +103,14 @@ public class BooksController {
         return "redirect:/books/" + id;
     }
 
+    @GetMapping("/search")
+    public String searchBooks(Model model, @RequestParam(name = "beginning", required = false) String beginning){
+        if (beginning != null){
+            model.addAttribute("books", bookService.findByNameStartingWith(beginning));
+        }
+        return "books/search";
+    }
+
 
 
 }

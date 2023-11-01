@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface BooksRepository extends JpaRepository<Book, Integer> {
 
-    public List<Book> findByNameStartingWith(String begining);
+    List<Book> findByNameStartingWith(String beginning);
 
-    public List<Book> findAllByOrderByYear();
+    List<Book> findAllByOrderByYear();
 
 }

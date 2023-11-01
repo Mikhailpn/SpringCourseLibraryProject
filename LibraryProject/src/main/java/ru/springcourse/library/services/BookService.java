@@ -65,8 +65,8 @@ public class BookService {
         }
     }
 
-    public List<Book> findByNameStartingWith(String begining){
-        return booksRepository.findByNameStartingWith(begining);
+    public List<Book> findByNameStartingWith(String beginning){
+        return booksRepository.findByNameStartingWith(beginning);
     }
 
 
