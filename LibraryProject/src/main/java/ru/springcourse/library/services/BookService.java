@@ -1,6 +1,9 @@
 package ru.springcourse.library.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.springcourse.library.models.Book;
@@ -9,6 +12,7 @@ import ru.springcourse.library.repositories.BooksRepository;
 import ru.springcourse.library.repositories.PeopleRepository;
 
 import javax.persistence.Table;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,11 +26,24 @@ public class BookService {
     public BookService(BooksRepository booksRepository){
         this.booksRepository = booksRepository;
     }
-    public List<Book> findAll(Boolean sort){
-        if (sort == true)
-            return booksRepository.findAllByOrderByYear();
-        else
-            return booksRepository.findAll();
+    public List<Book> findAll(Integer page, Integer booksPerPage, Boolean sortByYear){
+
+        //запрос с пагинацией
+        if (page != null && booksPerPage != null) {
+            Pageable pageRequest;
+            if (sortByYear != null)
+                pageRequest = PageRequest.of(page, booksPerPage, Sort.by("year"));
+            else
+                pageRequest = PageRequest.of(page, booksPerPage);
+
+            return booksRepository.findAll(pageRequest).toList();
+        }
+
+        //Запрос без пагинации
+        if (sortByYear != null)
+            return booksRepository.findAll(Sort.by("year"));
+
+        return booksRepository.findAll();
     }
 
     public Optional<Book> findById(int id){
@@ -68,6 +85,7 @@ public class BookService {
     public List<Book> findByNameStartingWith(String beginning){
         return booksRepository.findByNameStartingWith(beginning);
     }
+
 
 
 }

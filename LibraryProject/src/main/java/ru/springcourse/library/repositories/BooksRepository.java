@@ -14,6 +14,6 @@ public interface BooksRepository extends JpaRepository<Book, Integer> {
 
     List<Book> findByNameStartingWith(String beginning);
 
-    List<Book> findAllByOrderByYear();
+
 
 }
