@@ -55,8 +55,12 @@ public class BookService {
     }
     @Transactional
     public void update(int id, Book book){
-        book.setId(id);
-        booksRepository.save(book);
+        Optional<Book> bookToUpdate =  booksRepository.findById(id);
+        if (bookToUpdate.isPresent()){
+            book.setId(id);
+            book.setCustomer(bookToUpdate.get().getCustomer());
+            booksRepository.save(book);
+        }
     }
 
     @Transactional

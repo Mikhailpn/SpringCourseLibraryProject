@@ -8,8 +8,9 @@
 
 
 
-<form th:method="GET" th:action="@{/books/search}">
-    <input type="text" th:name="beginning"/>
+<form th:method="POST" th:action="@{/books/search}">
+    <label for="beginning">Введите запрос:</label>
+    <input type="text" id="beginning"  name="beginning"/>
     <input type="submit"  value="Искать"/>
 </form>
 

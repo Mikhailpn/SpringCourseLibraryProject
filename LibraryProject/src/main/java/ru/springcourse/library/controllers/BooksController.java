@@ -110,6 +110,11 @@ public class BooksController {
 
     @GetMapping("/search")
     public String searchBooks(Model model, @RequestParam(name = "beginning", required = false) String beginning){
+        return "books/search";
+    }
+
+    @PostMapping("/search")
+    public String makeSearch(Model model, @RequestParam(name = "beginning", required = false) String beginning){
         if (beginning != null){
             if(beginning.equals(""))
                 model.addAttribute("books", Collections.emptyList());
