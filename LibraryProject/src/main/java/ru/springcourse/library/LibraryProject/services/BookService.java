@@ -1,4 +1,4 @@
-package ru.springcourse.library.services;
+package ru.springcourse.library.LibraryProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -6,13 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.springcourse.library.models.Book;
-import ru.springcourse.library.models.Person;
-import ru.springcourse.library.repositories.BooksRepository;
-import ru.springcourse.library.repositories.PeopleRepository;
+import ru.springcourse.library.LibraryProject.models.Book;
+import ru.springcourse.library.LibraryProject.models.Person;
+import ru.springcourse.library.LibraryProject.repositories.BooksRepository;
 
-import javax.persistence.Table;
-import javax.persistence.criteria.CriteriaBuilder;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

@@ -1,16 +1,16 @@
-package ru.springcourse.library.models;
+package ru.springcourse.library.LibraryProject.models;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "library.person")
+@Table(name = "person", schema = "library")
 public class Person {
 
     @Id

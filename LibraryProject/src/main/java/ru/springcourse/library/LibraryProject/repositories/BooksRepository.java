@@ -1,12 +1,9 @@
-package ru.springcourse.library.repositories;
+package ru.springcourse.library.LibraryProject.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.springcourse.library.models.Book;
+import ru.springcourse.library.LibraryProject.models.Book;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Repository

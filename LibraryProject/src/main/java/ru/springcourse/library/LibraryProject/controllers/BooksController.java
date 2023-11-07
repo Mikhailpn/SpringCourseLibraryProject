@@ -1,18 +1,18 @@
-package ru.springcourse.library.controllers;
+package ru.springcourse.library.LibraryProject.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.springcourse.library.models.Book;
-import ru.springcourse.library.models.Person;
-import ru.springcourse.library.services.BookService;
-import ru.springcourse.library.services.PeopleService;
+import ru.springcourse.library.LibraryProject.models.Book;
+import ru.springcourse.library.LibraryProject.models.Person;
+import ru.springcourse.library.LibraryProject.services.BookService;
+import ru.springcourse.library.LibraryProject.services.PeopleService;
 
-import javax.validation.Valid;
-import java.util.Collection;
+
 import java.util.Collections;
 import java.util.Optional;
 

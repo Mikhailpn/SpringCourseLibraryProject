@@ -1,13 +1,12 @@
-package ru.springcourse.library.util;
+package ru.springcourse.library.LibraryProject.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.springcourse.library.models.Person;
-import ru.springcourse.library.services.PeopleService;
+import ru.springcourse.library.LibraryProject.models.Person;
+import ru.springcourse.library.LibraryProject.services.PeopleService;
 
-import javax.validation.Valid;
-import java.util.List;
+
 import java.util.Optional;
 
 @Component

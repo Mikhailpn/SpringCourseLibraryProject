@@ -1,15 +1,16 @@
-package ru.springcourse.library.models;
+package ru.springcourse.library.LibraryProject.models;
 
-import org.springframework.lang.Nullable;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 @Entity
-@Table(name = "library.book")
+@Table(name = "book", schema ="library")
 public class Book {
     @Id
     @Column
