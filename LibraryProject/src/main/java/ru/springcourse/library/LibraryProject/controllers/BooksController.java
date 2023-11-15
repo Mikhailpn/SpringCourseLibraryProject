@@ -1,7 +1,6 @@
 package ru.springcourse.library.LibraryProject.controllers;
 
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +12,7 @@ import ru.springcourse.library.LibraryProject.services.BookService;
 import ru.springcourse.library.LibraryProject.services.PeopleService;
 
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Optional;
 

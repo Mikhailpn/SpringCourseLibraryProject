@@ -6,8 +6,10 @@ import ru.springcourse.library.LibraryProject.models.Person;
 
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
-    List<Person> findByNameAndSurnameAndPatronymic(String name, String surname, String patronymic);
+    Optional<Person> findByNameAndSurnameAndPatronymic(String name, String surname, String patronymic);
 }

@@ -1,7 +1,7 @@
 package ru.springcourse.library.LibraryProject.controllers;
 
 
-import jakarta.validation.Valid;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,8 @@ import ru.springcourse.library.LibraryProject.models.Person;
 import ru.springcourse.library.LibraryProject.services.BookService;
 import ru.springcourse.library.LibraryProject.services.PeopleService;
 import ru.springcourse.library.LibraryProject.util.PersonValidator;
+
+import javax.validation.Valid;
 
 
 @Controller

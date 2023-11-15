@@ -1,11 +1,12 @@
 package ru.springcourse.library.LibraryProject.models;
 
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -42,9 +43,10 @@ public class Person {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date birthDate;
 
+    @Column(name = "password")
+    private String password;
 
-
-
+    
 
     public Person() {
 
@@ -106,4 +108,11 @@ public class Person {
         this.bookList = bookList;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

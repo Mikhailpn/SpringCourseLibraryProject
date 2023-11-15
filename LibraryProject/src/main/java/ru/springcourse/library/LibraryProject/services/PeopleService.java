@@ -54,7 +54,7 @@ public class PeopleService {
         peopleRepository.deleteById(id);
     }
 
-    public List<Person> findByFIO(Person person){
+    public Optional<Person> findByFIO(Person person){
         return peopleRepository.findByNameAndSurnameAndPatronymic(person.getName(), person.getSurname(), person.getPatronymic());
     }
 
