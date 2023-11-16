@@ -45,6 +45,8 @@ public class Person {
 
     @Column(name = "password")
     private String password;
+    @Column(name = "login")
+    private String login;
 
     
 
@@ -114,5 +116,13 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

@@ -20,8 +20,7 @@ public class PersonDetailsService implements UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        String[] fio = s.split("\\|");
-        Optional<Person> person = peopleRepository.findByNameAndSurnameAndPatronymic(fio[0],fio[1], fio[2]);
+        Optional<Person> person = peopleRepository.findByLogin(s);
 
         if (person.isEmpty()){
             throw new UsernameNotFoundException("User not found");
