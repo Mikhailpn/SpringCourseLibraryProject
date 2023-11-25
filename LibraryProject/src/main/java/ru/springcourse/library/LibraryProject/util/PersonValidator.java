@@ -27,9 +27,9 @@ public class PersonValidator implements Validator {
     public void validate(Object target, Errors errors) {
 
         Person person = (Person) target;
-        Optional<Person> searchRes = peopleService.findByFIO(person).stream().findAny();
+        Optional<Person> searchRes = peopleService.findByLogin(person.getUsername()).stream().findAny();
         if(searchRes.isPresent() && searchRes.get().getId() != person.getId()){
-            errors.rejectValue("name", "","This FIO is already in use");
+            errors.rejectValue("name", "","This login is already in use");
         }
 
     }

@@ -58,6 +58,10 @@ public class PeopleService {
         return peopleRepository.findByNameAndSurnameAndPatronymic(person.getName(), person.getSurname(), person.getPatronymic());
     }
 
+    public Optional<Person> findByLogin(String username){
+        return peopleRepository.findByUsername(username).stream().findAny();
+    }
+
     private boolean checkOverdue(Book book){
 
         //книга свободна
