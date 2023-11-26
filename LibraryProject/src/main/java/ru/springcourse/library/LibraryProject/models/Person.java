@@ -21,7 +21,7 @@ public class Person {
 
     @NotEmpty(message = "Name should not be empty")
     @Size(max = 40, message = "Max length is 40")
-    @Column
+    @Column(unique = true)
     private String name;
 
     @NotEmpty(message = "Surname should not be empty")
@@ -44,9 +44,14 @@ public class Person {
     private Date birthDate;
 
     @Column(name = "password")
+    @NotEmpty(message = "Password should not be empty")
     private String password;
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
+    @NotEmpty(message = "Login should not be empty")
     private String username;
+
+    @Column(name = "role")
+    private String role;
 
     
 
@@ -125,5 +130,13 @@ public class Person {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

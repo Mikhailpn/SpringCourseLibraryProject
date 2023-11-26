@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.springcourse.library.LibraryProject.models.Person;
 import ru.springcourse.library.LibraryProject.services.BookService;
 import ru.springcourse.library.LibraryProject.services.PeopleService;
-import ru.springcourse.library.LibraryProject.util.PersonValidator;
 
 import javax.validation.Valid;
 
@@ -22,15 +21,14 @@ public class PeopleController {
 
 private SessionFactory sessionFactory;
 
-    private final PersonValidator validator;
+
     private final PeopleService peopleService;
 
     private final BookService bookService;
 
 
     @Autowired
-    public PeopleController(PersonValidator validator, PeopleService peopleService, BookService bookService) {
-        this.validator = validator;
+    public PeopleController(PeopleService peopleService, BookService bookService) {
         this.peopleService = peopleService;
         this.bookService = bookService;
     }
@@ -58,7 +56,6 @@ private SessionFactory sessionFactory;
     public String createPerson(@ModelAttribute("person") @Valid Person person,
                                BindingResult bindingResult) {
 
-        validator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors())
             return "people/new";
@@ -72,7 +69,7 @@ private SessionFactory sessionFactory;
                                BindingResult bindingResult,
                                @PathVariable("id") int id) {
 
-        validator.validate(person, bindingResult);
+        //validator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors())
             return "people/edit";
