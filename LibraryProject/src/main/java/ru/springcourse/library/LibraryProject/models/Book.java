@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book", schema ="library")
@@ -108,5 +109,18 @@ public class Book {
 
     public void setOverdue(boolean overdue) {
         this.overdue = overdue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id && year == book.year && overdue == book.overdue && name.equals(book.name) && Objects.equals(author, book.author) && Objects.equals(customer, book.customer) && Objects.equals(allocTime, book.allocTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, author, year, customer, allocTime, overdue);
     }
 }
