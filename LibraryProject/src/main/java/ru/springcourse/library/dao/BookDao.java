@@ -1,6 +1,7 @@
 package ru.springcourse.library.dao;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,10 @@ import ru.springcourse.library.models.Book;
 import ru.springcourse.library.models.Person;
 
 
-import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +36,13 @@ public class BookDao {
     @Transactional(readOnly = true)
     public List<Book> all() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM Book", Book.class).getResultList();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Book> criteriaQuery = cb.createQuery(Book.class);
+        Root<Book> root = criteriaQuery.from(Book.class);
+        criteriaQuery.select(root);
+
+        Query<Book> query = session.createQuery(criteriaQuery);
+        return  query.getResultList();
     }
 
     @Transactional(readOnly = true)
@@ -90,14 +100,18 @@ public class BookDao {
     }
 
 
+    //ищем пользователей, у которых нет этой книги на руках
     @Transactional(readOnly = true)
     public List<Person> getPossibleOwners(int book_id){
         Session session = sessionFactory.getCurrentSession();
-        List<Person> personList = session.createQuery("SELECT p FROM Person p WHERE NOT EXISTS" +
-                        " (SELECT p1 FROM Person p1 JOIN p1.bookList b WHERE b.id = ?1 AND p.id = p1.id)", Person.class)
-                .setParameter(1,book_id)
-                .getResultList();
-        return  personList;
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        CriteriaQuery<Person>  criteriaQuery = cb.createQuery(Person.class);
+        Root<Person> personRoot = criteriaQuery.from(Person.class);
+        criteriaQuery.select(personRoot).where(cb.isNotMember(book_id, personRoot.get("bookList")));
+
+        Query<Person> query = session.createQuery(criteriaQuery);
+        return  query.getResultList();
 
     }
 

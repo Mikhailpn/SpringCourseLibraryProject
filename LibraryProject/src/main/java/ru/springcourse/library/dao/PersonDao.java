@@ -1,6 +1,7 @@
 package ru.springcourse.library.dao;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.springcourse.library.models.Person;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +30,13 @@ public class PersonDao {
     @Transactional(readOnly = true)
     public List<Person> all() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM Person", Person.class).getResultList();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Person> criteriaQuery= cb.createQuery(Person.class);
+        Root<Person> root = criteriaQuery.from(Person.class);
+        criteriaQuery.select(root);
+
+        Query<Person> query = session.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
     @Transactional(readOnly = true)
@@ -57,11 +68,18 @@ public class PersonDao {
     @Transactional(readOnly = true)
     public Optional<Person> findByFIO(Person person){
         Session session = sessionFactory.getCurrentSession();
-        String hql = "FROM Person WHERE name=:name  AND surname=:surname AND patronymic=:patronymic";
-        return session.createQuery(hql, Person.class)
-                .setParameter("name", person.getName())
-                .setParameter("surname", person.getSurname())
-                .setParameter("patronymic", person.getPatronymic()).list().stream().findAny();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Person> criteriaQuery = cb.createQuery(Person.class);
+        Root<Person> root = criteriaQuery.from(Person.class);
+
+        Predicate nameEquals = cb.equal(root.get("name"), person.getName());
+        Predicate surnameEquals = cb.equal(root.get("surname"), person.getSurname());
+        Predicate patrEquals = cb.equal(root.get("patronymic"), person.getPatronymic());
+        criteriaQuery.select(root).where(cb.and(cb.and(nameEquals, surnameEquals), patrEquals));
+
+        Query<Person> query = session.createQuery(criteriaQuery);
+        return query.getResultList().stream().findAny();
+
     }
 
     @Transactional
